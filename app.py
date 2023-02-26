@@ -7,14 +7,16 @@ def openApp():
     sg.theme("dark")
 
     left = [[sg.Text("Choose a file: ")],
-            [sg.Text("File: "), sg.InputText(), sg.FileBrowse(key='-IN-')],
-            [sg.Button("Select")]]
+            [sg.Text("File: "), sg.InputText(size=(45,5)), sg.FileBrowse(key='-IN-')],
+            [sg.Text("Select background of image:"), sg.Radio("White", "color", key='-WHITE-'), sg.Radio("Black", "color", default=True, key='-BLACK-')],
+            [sg.Text("Image Scale: "), sg.Slider(range=(50, 250), default_value=100, orientation='h', key="-SCALE-")],
+            [sg.Button("Select"), sg.Button("Convert")]]
 
-    right = [sg.Text("Podglad zdjecia"),
-             [sg.Image(key="-IMAGE-")]]
+
+    right = [[sg.Text("Podgląd zdjęcia")],
+            [sg.Image(key="-IMAGE-")]]
 
     layout = [[sg.Column(left),
-              sg.VSeparator(),
               sg.Column(right)]]
 
     app = sg.Window('Ascii formater', layout, size=(800, 400))
@@ -31,5 +33,11 @@ def openApp():
                 bio = io.BytesIO()
                 image.save(bio, format="PNG")
                 app["-IMAGE-"].update(data=bio.getvalue())
-                resize_image(file)
-
+        elif event == 'Convert':
+            if file:
+                if value['-WHITE-']==True:
+                    resize_image(file, 'white', value['-SCALE-'])
+                elif value['-BLACK-']==True:
+                    resize_image(file, 'black', value['-SCALE-'])
+            else:
+                pass

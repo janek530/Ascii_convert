@@ -6,11 +6,11 @@ import matplotlib.pylab as plt
 
 gray = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
 
-def resize_image(image):
+def resize_image(image, background_color, scale):
     file = open("ascci.txt", "w")
     ascii_tab = []
     img = cv.cvtColor(cv.imread(image), cv.COLOR_BGR2GRAY)
-    scale_percent = 400
+    scale_percent = scale
     width = int(img.shape[1] * scale_percent / 100)
     height = int(img.shape[0] * scale_percent / 100)
     dim = (width, height)
@@ -18,15 +18,17 @@ def resize_image(image):
         img = cv.resize(img, dim,  interpolation = cv.INTER_AREA)
 
     img_pixeled = cv.resize(img, None, fx=0.50, fy=0.25)
-    # fig, ax = plt.subplots(figsize=(8, 8))
-    # plt.imshow(img_pixeled, cmap="Greys")
-    # plt.show()
+
     for i in img_pixeled:
         ascii_line = []
         for pixel in i:
             for j in range(69, 0, -1):
-                if int(pixel/3.657142857142857)==70-j:
-                    ascii_line.append(gray[j])
+                if background_color == 'white':
+                    if int(pixel/3.657142857142857)==j:
+                        ascii_line.append(gray[j])
+                elif background_color == 'black':
+                    if int(pixel/3.657142857142857)==70-j:
+                        ascii_line.append(gray[j])
         ascii_tab.append(ascii_line)
 
     for line in ascii_tab:
